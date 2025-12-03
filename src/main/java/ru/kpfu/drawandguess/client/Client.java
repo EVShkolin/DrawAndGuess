@@ -1,6 +1,7 @@
 package ru.kpfu.drawandguess.client;
 
 import ru.kpfu.drawandguess.common.protocol.DrawingMessage;
+import ru.kpfu.drawandguess.common.protocol.BoardSyncMessage;
 
 import javax.swing.*;
 import java.io.IOException;
@@ -43,11 +44,14 @@ public class Client {
         new Thread(() -> {
             while (true) {
                 try {
-                    DrawingMessage message = (DrawingMessage) in.readObject();
-                    System.out.println("Received new message with type " + message.getType());
-                    switch (message.getType()) {
-                        case PRESS -> drawingBoard.handleMousePressed(message.getPoint());
-                        case DRAG -> drawingBoard.handleMouseDragged(message.getPoint());
+                    Object newMessage = in.readObject();
+                    if (newMessage instanceof DrawingMessage message) {
+                        switch (message.getType()) {
+                            case PRESS -> drawingBoard.handleMousePressed(message.getPoint());
+                            case DRAG -> drawingBoard.handleMouseDragged(message.getPoint());
+                        }
+                    } else if (newMessage instanceof BoardSyncMessage message) {
+                        drawingBoard.synchronize(message.getLines());
                     }
 
                 } catch (IOException e) {

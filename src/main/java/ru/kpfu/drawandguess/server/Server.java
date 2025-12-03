@@ -23,9 +23,9 @@ public class Server {
             while (true) {
                 Socket socket = serverSocket.accept();
                 Connection connection = new Connection(socket, this, messageHandler, socket.getPort() + "");
-
-                new Thread(connection).start();
                 connections.add(connection);
+                messageHandler.sendSyncMessage(connection);
+                new Thread(connection).start();
             }
         } catch (IOException e) {
             e.printStackTrace();

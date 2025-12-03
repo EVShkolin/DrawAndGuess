@@ -1,6 +1,7 @@
 package ru.kpfu.drawandguess.server;
 
 import lombok.AllArgsConstructor;
+import ru.kpfu.drawandguess.common.protocol.BoardSyncMessage;
 import ru.kpfu.drawandguess.common.protocol.DrawingMessage;
 
 import java.awt.*;
@@ -44,5 +45,9 @@ public class MessageHandler {
 
     private void handleDragMessage(DrawingMessage message) {
         currentLine.add(message.getPoint());
+    }
+
+    public void sendSyncMessage(Connection connection) {
+        connection.sendMessage(new BoardSyncMessage(lines));
     }
 }
