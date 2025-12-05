@@ -22,6 +22,7 @@ public class Server {
         try (ServerSocket serverSocket = new ServerSocket(8888)) {
             while (true) {
                 Socket socket = serverSocket.accept();
+                System.out.println("New user connected");
                 Connection connection = new Connection(socket, this, messageHandler, socket.getPort() + "");
                 connections.add(connection);
                 messageHandler.sendSyncMessage(connection);

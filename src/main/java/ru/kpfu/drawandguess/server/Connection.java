@@ -2,7 +2,7 @@ package ru.kpfu.drawandguess.server;
 
 import lombok.Getter;
 import lombok.Setter;
-import ru.kpfu.drawandguess.common.protocol.DrawingMessage;
+import ru.kpfu.drawandguess.common.protocol.draw.DrawingMessage;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;

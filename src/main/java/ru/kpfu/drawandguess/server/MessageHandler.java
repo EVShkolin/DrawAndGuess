@@ -1,8 +1,8 @@
 package ru.kpfu.drawandguess.server;
 
 import lombok.AllArgsConstructor;
-import ru.kpfu.drawandguess.common.protocol.BoardSyncMessage;
-import ru.kpfu.drawandguess.common.protocol.DrawingMessage;
+import ru.kpfu.drawandguess.common.protocol.draw.DrawingMessage;
+import ru.kpfu.drawandguess.common.protocol.game.GameSyncMessage;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -21,7 +21,7 @@ public class MessageHandler {
     }
 
     public void handleMessage(DrawingMessage message, String authorName) {
-        switch (message.getType()) {
+        switch (message.getDrawingType()) {
             case PRESS -> handlePressMessage(message);
             case DRAG -> handleDragMessage(message);
         }
@@ -48,6 +48,6 @@ public class MessageHandler {
     }
 
     public void sendSyncMessage(Connection connection) {
-        connection.sendMessage(new BoardSyncMessage(lines));
+        connection.sendMessage(new GameSyncMessage(lines));
     }
 }

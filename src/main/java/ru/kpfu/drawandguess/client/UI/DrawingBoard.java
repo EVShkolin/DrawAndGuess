@@ -1,34 +1,34 @@
-package ru.kpfu.drawandguess.client;
+package ru.kpfu.drawandguess.client.UI;
 
-import ru.kpfu.drawandguess.common.protocol.DrawingMessage;
-import ru.kpfu.drawandguess.common.protocol.DrawingType;
+import ru.kpfu.drawandguess.common.protocol.draw.DrawingMessage;
+import ru.kpfu.drawandguess.common.protocol.draw.DrawingType;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
-import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
 public class DrawingBoard extends JPanel {
 
-    private Client client;
+    private GameRoomPanel gameRoomPanel;
 
     private List<List<Point>> lines = new ArrayList<>();
     private List<Point> currentLine;
     private int brushSize = 3;
     private Color color = Color.BLACK;
 
-    public DrawingBoard(Client client) {
-        this.client = client;
+    public DrawingBoard(GameRoomPanel gameRoomPanel) {
+        this.gameRoomPanel = gameRoomPanel;
+        this.setBackground(Color.CYAN);
         addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
                 Point p = new Point(e.getX(), e.getY());
                 handleMousePressed(p);
-                client.sendMessage(new DrawingMessage(DrawingType.PRESS, p));
+                gameRoomPanel.sendMessage(new DrawingMessage(DrawingType.PRESS, p));
             }
         });
 
@@ -37,7 +37,7 @@ public class DrawingBoard extends JPanel {
             public void mouseDragged(MouseEvent e) {
                 Point p = new Point(e.getX(), e.getY());
                 handleMouseDragged(p);
-                client.sendMessage(new DrawingMessage(DrawingType.DRAG, p));
+                gameRoomPanel.sendMessage(new DrawingMessage(DrawingType.DRAG, p));
 
             }
         });
@@ -54,6 +54,10 @@ public class DrawingBoard extends JPanel {
                 Point p1 = points.get(i);
                 Point p2 = points.get(i + 1);
                 g2d.drawLine(p1.x, p1.y, p2.x, p2.y);
+            }
+            if (points.size() == 1) {
+                Point p = points.getFirst();
+                g2d.drawLine(p.x, p.y, p.x, p.y);
             }
         }
     }
