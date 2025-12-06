@@ -8,28 +8,38 @@ import java.util.List;
 
 public class Server {
 
-    private static List<Connection> connections;
+    private List<Connection> connections;
 
-    private static MessageHandler messageHandler;
+    private RoomManager roomManager;
 
 
     public Server() {
         this.connections = new ArrayList<>();
-        this.messageHandler = new MessageHandler(connections);
+        this.roomManager = new RoomManager();
     }
 
     public void init() {
         try (ServerSocket serverSocket = new ServerSocket(8888)) {
+            String gameRoomId = connectFirstPlayer(serverSocket).getId(); // remove later
             while (true) {
                 Socket socket = serverSocket.accept();
-                Connection connection = new Connection(socket, this, messageHandler, socket.getPort() + "");
+                System.out.println("New user connected");
+                Connection connection = new Connection(socket, roomManager, socket.getPort() + "");
                 connections.add(connection);
-                messageHandler.sendSyncMessage(connection);
+                roomManager.addPlayerToRoom(connection, gameRoomId);
                 new Thread(connection).start();
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private GameRoom connectFirstPlayer(ServerSocket serverSocket) throws IOException { // temporary method
+        Socket socket = serverSocket.accept();
+        Connection connection = new Connection(socket, roomManager, socket.getPort() + "");
+        connections.add(connection);
+        new Thread(connection).start();
+        return roomManager.createRoom("Test Room", connection);
     }
 
 
