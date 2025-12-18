@@ -1,4 +1,6 @@
 package ru.kpfu.drawandguess.client.UI;
 
-public class ChatPanel {
+import javax.swing.*;
+
+public class ChatPanel extends JFrame {
 }

@@ -22,7 +22,7 @@ public class DrawingBoard extends JPanel {
 
     public DrawingBoard(GameRoomPanel gameRoomPanel) {
         this.gameRoomPanel = gameRoomPanel;
-        this.setBackground(Color.CYAN);
+        this.setBackground(Color.WHITE);
         addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {

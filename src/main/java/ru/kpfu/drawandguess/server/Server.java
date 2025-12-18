@@ -1,6 +1,7 @@
 package ru.kpfu.drawandguess.server;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -20,6 +21,7 @@ public class Server {
 
     public void init() {
         try (ServerSocket serverSocket = new ServerSocket(8888)) {
+            System.out.println("Server IP: " + InetAddress.getLocalHost().getHostAddress());
             String gameRoomId = connectFirstPlayer(serverSocket).getId(); // remove later
             while (true) {
                 Socket socket = serverSocket.accept();

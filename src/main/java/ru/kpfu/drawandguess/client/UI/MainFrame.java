@@ -18,7 +18,8 @@ public class MainFrame extends JFrame {
     public MainFrame() {
         this.setTitle("Draw & Guess");
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
-        this.setSize(1000, 800);
+        this.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        this.setMinimumSize(new Dimension(1000, 800));
         this.setLocationRelativeTo(null);
     }
 

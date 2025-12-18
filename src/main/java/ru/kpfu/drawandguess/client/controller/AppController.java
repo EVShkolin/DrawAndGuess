@@ -7,7 +7,6 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 public class AppController {
-
     private GameController gameController;
     private NetworkController networkController;
     private MainFrame mainFrame;
@@ -36,7 +35,7 @@ public class AppController {
 
     private void connectToServer() {
         try {
-            this.networkController.connect(InetAddress.getLocalHost(), 8888);
+            networkController.connect(InetAddress.getLocalHost(), 8888);
         } catch (UnknownHostException e) {
             throw new RuntimeException(e);
         }
