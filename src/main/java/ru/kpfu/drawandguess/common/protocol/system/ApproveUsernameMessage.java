@@ -1,4 +1,4 @@
-package ru.kpfu.drawandguess.common.protocol.chat;
+package ru.kpfu.drawandguess.common.protocol.system;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,14 +9,12 @@ import ru.kpfu.drawandguess.common.protocol.MessageType;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-public class ChatMessage implements Message {
+public class ApproveUsernameMessage implements Message {
 
     private String username;
 
-    private String text;
-
     @Override
     public MessageType getType() {
-        return MessageType.CHAT;
+        return MessageType.SYSTEM;
     }
 }

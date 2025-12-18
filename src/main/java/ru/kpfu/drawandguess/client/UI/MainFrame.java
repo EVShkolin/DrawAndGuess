@@ -14,6 +14,7 @@ public class MainFrame extends JFrame {
     private Panel loginPanel;
     private Panel gameListPanel;
     private GameRoomPanel gameRoomPanel;
+    private String username;
 
     public MainFrame() {
         this.setTitle("Draw & Guess");
@@ -26,6 +27,11 @@ public class MainFrame extends JFrame {
     public void setGameController(GameController gameController) {
         this.gameRoomPanel = new GameRoomPanel(gameController);
         this.add(gameRoomPanel);
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+        gameRoomPanel.getChat().setUsername(username);
     }
 
 }

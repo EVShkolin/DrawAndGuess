@@ -22,28 +22,16 @@ public class Server {
     public void init() {
         try (ServerSocket serverSocket = new ServerSocket(8888)) {
             System.out.println("Server IP: " + InetAddress.getLocalHost().getHostAddress());
-            String gameRoomId = connectFirstPlayer(serverSocket).getId(); // remove later
             while (true) {
                 Socket socket = serverSocket.accept();
-                System.out.println("New user connected");
-                Connection connection = new Connection(socket, roomManager, socket.getPort() + "");
+                Connection connection = new Connection(socket, roomManager);
                 connections.add(connection);
-                roomManager.addPlayerToRoom(connection, gameRoomId);
                 new Thread(connection).start();
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-
-    private GameRoom connectFirstPlayer(ServerSocket serverSocket) throws IOException { // temporary method
-        Socket socket = serverSocket.accept();
-        Connection connection = new Connection(socket, roomManager, socket.getPort() + "");
-        connections.add(connection);
-        new Thread(connection).start();
-        return roomManager.createRoom("Test Room", connection);
-    }
-
 
     public static void main(String[] args) {
         Server server = new Server();

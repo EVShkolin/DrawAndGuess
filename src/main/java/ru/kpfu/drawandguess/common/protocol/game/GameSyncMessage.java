@@ -3,10 +3,10 @@ package ru.kpfu.drawandguess.common.protocol.game;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import ru.kpfu.drawandguess.common.model.ChatMessage;
 import ru.kpfu.drawandguess.common.model.GameState;
 import ru.kpfu.drawandguess.common.protocol.Message;
 import ru.kpfu.drawandguess.common.protocol.MessageType;
+import ru.kpfu.drawandguess.common.protocol.chat.ChatMessage;
 import ru.kpfu.drawandguess.server.Connection;
 import ru.kpfu.drawandguess.server.GameRoom;
 
@@ -22,7 +22,6 @@ public class GameSyncMessage implements Message {
     private String title;
     private List<String> players;
     private List<List<Point>> lines;
-    private List<ChatMessage> messages;
     private GameState gameState;
     private int roundTimeLeft;
     private String currentDrawer;
@@ -36,7 +35,6 @@ public class GameSyncMessage implements Message {
                 .map(Connection::getUsername)
                 .toList();
         this.lines = gameRoom.getLines();
-        this.messages = gameRoom.getMessages();
         this.gameState = gameRoom.getGameState();
         this.roundTimeLeft = gameRoom.getRoundTimeLeft();
         this.currentDrawer = gameRoom.getCurrentDrawer() == null ? null : gameRoom.getCurrentDrawer().getUsername();

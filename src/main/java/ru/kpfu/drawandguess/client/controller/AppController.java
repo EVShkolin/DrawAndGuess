@@ -1,6 +1,8 @@
 package ru.kpfu.drawandguess.client.controller;
 
 import ru.kpfu.drawandguess.client.UI.MainFrame;
+import ru.kpfu.drawandguess.common.protocol.Message;
+import ru.kpfu.drawandguess.common.protocol.system.ApproveUsernameMessage;
 
 import javax.swing.*;
 import java.net.InetAddress;
@@ -10,6 +12,7 @@ public class AppController {
     private GameController gameController;
     private NetworkController networkController;
     private MainFrame mainFrame;
+    private String username;
 
     public AppController() {
         SwingUtilities.invokeLater(() -> {
@@ -23,7 +26,7 @@ public class AppController {
     }
 
     private void initControllers() {
-        this.networkController = new NetworkController();
+        this.networkController = new NetworkController(this);
         this.gameController = new GameController(networkController);
 
         this.mainFrame.setGameController(gameController);
@@ -38,6 +41,12 @@ public class AppController {
             networkController.connect(InetAddress.getLocalHost(), 8888);
         } catch (UnknownHostException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    public void handleSystemMessage(Message message) {
+        if (message instanceof ApproveUsernameMessage usernameMessage) {
+            mainFrame.setUsername(usernameMessage.getUsername());
         }
     }
 

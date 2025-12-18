@@ -1,14 +1,16 @@
 package ru.kpfu.drawandguess.client.UI;
 
+import lombok.Getter;
 import ru.kpfu.drawandguess.client.controller.GameController;
-import ru.kpfu.drawandguess.common.model.ChatMessage;
 import ru.kpfu.drawandguess.common.protocol.Message;
+import ru.kpfu.drawandguess.common.protocol.chat.ChatMessage;
 import ru.kpfu.drawandguess.common.protocol.draw.DrawingMessage;
 import ru.kpfu.drawandguess.common.protocol.game.GameSyncMessage;
 
 import javax.swing.*;
 import java.awt.*;
 
+@Getter
 public class GameRoomPanel extends JPanel {
 
     private GameController gameController;
@@ -20,6 +22,7 @@ public class GameRoomPanel extends JPanel {
     public GameRoomPanel(GameController gameController) {
         this.gameController = gameController;
         this.drawingBoard = new DrawingBoard(this);
+        this.chat = new ChatPanel(this);
 
         this.setBackground(Color.CYAN);
         this.setLayout(new GridBagLayout());
@@ -59,13 +62,9 @@ public class GameRoomPanel extends JPanel {
         left.setPreferredSize(new Dimension(200, 100));
         left.setBackground(Color.WHITE);
 
-        JPanel right = new JPanel();
-        right.setPreferredSize(new Dimension(300, 100));
-        right.setBackground(Color.WHITE);
-
         centerPanel.add(top, BorderLayout.NORTH);
         centerPanel.add(left, BorderLayout.WEST);
-        centerPanel.add(right, BorderLayout.EAST);
+        centerPanel.add(this.chat, BorderLayout.EAST);
         centerPanel.add(this.drawingBoard, BorderLayout.CENTER);
 
         return centerPanel;
@@ -103,7 +102,7 @@ public class GameRoomPanel extends JPanel {
     }
 
     public void handleChatMessage(ChatMessage message) {
-
+        chat.appendMessage(message);
     }
 
     public void synchronize(GameSyncMessage message) {

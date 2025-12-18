@@ -5,8 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import ru.kpfu.drawandguess.client.UI.GameRoomPanel;
-import ru.kpfu.drawandguess.common.model.ChatMessage;
 import ru.kpfu.drawandguess.common.protocol.Message;
+import ru.kpfu.drawandguess.common.protocol.chat.ChatMessage;
 import ru.kpfu.drawandguess.common.protocol.draw.DrawingMessage;
 import ru.kpfu.drawandguess.common.protocol.game.GameSyncMessage;
 
