@@ -23,19 +23,22 @@ public class DrawingBoard extends JPanel {
     private int brushSize = 3;
     private Color color = Color.BLACK;
 
+    private MouseListener mouseListener;
+    private MouseMotionListener mouseMotionListener;
+
     public DrawingBoard(GameRoomPanel gameRoomPanel) {
         this.gameRoomPanel = gameRoomPanel;
         this.setBackground(Color.WHITE);
-        addMouseListener(new MouseAdapter() {
+        this.mouseListener = new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
                 Point p = new Point(e.getX(), e.getY());
                 handleMousePressed(p, brushSize, color);
                 gameRoomPanel.sendMessage(new DrawingMessage(DrawingType.PRESS, p, brushSize, color));
             }
-        });
+        };
 
-        addMouseMotionListener(new MouseMotionAdapter() {
+        this.mouseMotionListener = new MouseMotionAdapter() {
             @Override
             public void mouseDragged(MouseEvent e) {
                 Point p = new Point(e.getX(), e.getY());
@@ -43,7 +46,19 @@ public class DrawingBoard extends JPanel {
                 gameRoomPanel.sendMessage(new DrawingMessage(DrawingType.DRAG, p));
 
             }
-        });
+        };
+    }
+
+    public void enableDrawing() {
+        addMouseListener(this.mouseListener);
+        addMouseMotionListener(this.mouseMotionListener);
+        setCursor(new Cursor(Cursor.CROSSHAIR_CURSOR));
+    }
+
+    public void disableDrawing() {
+        removeMouseListener(this.mouseListener);
+        removeMouseMotionListener(this.mouseMotionListener);
+        setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
     }
 
     @Override

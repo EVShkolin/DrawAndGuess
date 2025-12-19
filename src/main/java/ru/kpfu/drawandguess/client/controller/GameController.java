@@ -8,8 +8,7 @@ import ru.kpfu.drawandguess.client.UI.GameRoomPanel;
 import ru.kpfu.drawandguess.common.protocol.Message;
 import ru.kpfu.drawandguess.common.protocol.chat.ChatMessage;
 import ru.kpfu.drawandguess.common.protocol.draw.DrawingMessage;
-import ru.kpfu.drawandguess.common.protocol.game.GameSyncMessage;
-import ru.kpfu.drawandguess.common.protocol.game.PlayerPresenceMessage;
+import ru.kpfu.drawandguess.common.protocol.game.*;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -41,6 +40,12 @@ public class GameController {
                 gameRoomPanel.addPlayer(playerPresenceMessage.getPlayer());
             else
                 gameRoomPanel.removePlayer(playerPresenceMessage.getPlayer());
+        } else if (message instanceof AllowDrawingMessage allowDrawingMessage) {
+            gameRoomPanel.handleAllowDrawingMessage(allowDrawingMessage);
+        } else if (message instanceof TimerMessage timerMessage) {
+            gameRoomPanel.updateTimer(timerMessage.getTimeLeft());
+        } else if (message instanceof RoundUpdateMessage roundUpdateMessage) {
+            gameRoomPanel.updateRound(roundUpdateMessage.getCurrentRound(), roundUpdateMessage.getTotalRounds());
         }
     }
 

@@ -6,6 +6,7 @@ import ru.kpfu.drawandguess.common.model.Player;
 import ru.kpfu.drawandguess.common.protocol.Message;
 import ru.kpfu.drawandguess.common.protocol.chat.ChatMessage;
 import ru.kpfu.drawandguess.common.protocol.draw.DrawingMessage;
+import ru.kpfu.drawandguess.common.protocol.game.AllowDrawingMessage;
 import ru.kpfu.drawandguess.common.protocol.game.GameSyncMessage;
 
 import javax.swing.*;
@@ -19,12 +20,15 @@ public class GameRoomPanel extends JPanel {
     private DrawingBoard drawingBoard;
     private ChatPanel chat;
     private PlayerListPanel playerList;
+    private RoundInfoPanel roundInfoPanel;
+    private DrawingOptionsPanel drawingOptionsPanel;
 
     public GameRoomPanel(GameController gameController) {
         this.gameController = gameController;
         this.drawingBoard = new DrawingBoard(this);
         this.chat = new ChatPanel(this);
         this.playerList = new PlayerListPanel();
+        this.roundInfoPanel = new RoundInfoPanel();
 
         this.setBackground(Color.CYAN);
         this.setLayout(new GridBagLayout());
@@ -43,7 +47,7 @@ public class GameRoomPanel extends JPanel {
 
         container.add(Box.createVerticalStrut(5));
 
-        DrawingOptionsPanel drawingOptionsPanel = new DrawingOptionsPanel(
+        this.drawingOptionsPanel = new DrawingOptionsPanel(
                 drawingBoard,
                 this
         );
@@ -58,15 +62,7 @@ public class GameRoomPanel extends JPanel {
         centerPanel.setOpaque(false);
         centerPanel.setLayout(new BorderLayout(5, 5));
 
-        JPanel top = new JPanel();
-        top.setPreferredSize(new Dimension(100, 70));
-        top.setBackground(Color.WHITE);
-
-        JLabel gameStatusLabel = new JLabel("Ожидание начала игры...", SwingConstants.CENTER);
-        gameStatusLabel.setFont(new Font("Arial", Font.BOLD, 16));
-        top.add(gameStatusLabel);
-
-        centerPanel.add(top, BorderLayout.NORTH);
+        centerPanel.add(this.roundInfoPanel, BorderLayout.NORTH);
         centerPanel.add(this.playerList, BorderLayout.WEST);
         centerPanel.add(this.chat, BorderLayout.EAST);
         centerPanel.add(this.drawingBoard, BorderLayout.CENTER);
@@ -104,6 +100,27 @@ public class GameRoomPanel extends JPanel {
     public void synchronize(GameSyncMessage message) {
         playerList.setPlayers(message.getPlayers());
         drawingBoard.synchronize(message.getLines());
+        if (message.getHiddenWord() != null) {
+            roundInfoPanel.setWordLength(message.getHiddenWord().length());
+        }
+    }
+
+    public void handleAllowDrawingMessage(AllowDrawingMessage message) {
+        if (message.isAllowedToDraw()) {
+            drawingBoard.enableDrawing();
+            drawingOptionsPanel.setVisible(true);
+        } else {
+            drawingBoard.disableDrawing();
+            drawingOptionsPanel.setVisible(false);
+        }
+    }
+
+    public void updateTimer(int timeLeft) {
+        roundInfoPanel.updateTimer(timeLeft);
+    }
+
+    public void updateRound(int currentRound, int totalRounds) {
+        roundInfoPanel.updateRound(currentRound, totalRounds);
     }
 }
 
