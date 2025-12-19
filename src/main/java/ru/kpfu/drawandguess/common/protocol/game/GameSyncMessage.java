@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import ru.kpfu.drawandguess.common.model.GameState;
+import ru.kpfu.drawandguess.common.model.Line;
+import ru.kpfu.drawandguess.common.model.Player;
 import ru.kpfu.drawandguess.common.protocol.Message;
 import ru.kpfu.drawandguess.common.protocol.MessageType;
 import ru.kpfu.drawandguess.common.protocol.chat.ChatMessage;
@@ -20,8 +22,8 @@ public class GameSyncMessage implements Message {
 
     private String id;
     private String title;
-    private List<String> players;
-    private List<List<Point>> lines;
+    private List<Player> players;
+    private List<Line> lines;
     private GameState gameState;
     private int roundTimeLeft;
     private String currentDrawer;
@@ -32,7 +34,7 @@ public class GameSyncMessage implements Message {
         this.id = gameRoom.getId();
         this.title = gameRoom.getTitle();
         this.players = gameRoom.getPlayers().stream()
-                .map(Connection::getUsername)
+                .map(c -> new Player(c.getId(), c.getUsername(), c.getScore()))
                 .toList();
         this.lines = gameRoom.getLines();
         this.gameState = gameRoom.getGameState();

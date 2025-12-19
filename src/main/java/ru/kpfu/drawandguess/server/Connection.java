@@ -20,6 +20,7 @@ public class Connection implements Runnable {
 
     private String id;
     private String username;
+    private int score;
     private Socket socket;
     private RoomManager roomManager;
     private GameRoom gameRoom;
@@ -60,7 +61,7 @@ public class Connection implements Runnable {
                 handleMessage(message, this);
             }
         } catch (IOException | ClassNotFoundException e) {
-            System.out.println(id + " " + username + " has left");
+            System.out.println(username + " has left");
             gameRoom.removePlayer(this);
         }
 

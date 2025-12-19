@@ -9,6 +9,7 @@ import ru.kpfu.drawandguess.common.protocol.Message;
 import ru.kpfu.drawandguess.common.protocol.chat.ChatMessage;
 import ru.kpfu.drawandguess.common.protocol.draw.DrawingMessage;
 import ru.kpfu.drawandguess.common.protocol.game.GameSyncMessage;
+import ru.kpfu.drawandguess.common.protocol.game.PlayerPresenceMessage;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -32,10 +33,14 @@ public class GameController {
         }
     }
 
-
     private void handleGameMessage(Message message) {
         if (message instanceof GameSyncMessage syncMessage) {
             gameRoomPanel.synchronize(syncMessage);
+        } else if (message instanceof PlayerPresenceMessage playerPresenceMessage) {
+            if (playerPresenceMessage.isJoined())
+                gameRoomPanel.addPlayer(playerPresenceMessage.getPlayer());
+            else
+                gameRoomPanel.removePlayer(playerPresenceMessage.getPlayer());
         }
     }
 

@@ -2,6 +2,7 @@ package ru.kpfu.drawandguess.client.UI;
 
 import lombok.Getter;
 import ru.kpfu.drawandguess.client.controller.GameController;
+import ru.kpfu.drawandguess.common.model.Player;
 import ru.kpfu.drawandguess.common.protocol.Message;
 import ru.kpfu.drawandguess.common.protocol.chat.ChatMessage;
 import ru.kpfu.drawandguess.common.protocol.draw.DrawingMessage;
@@ -23,6 +24,7 @@ public class GameRoomPanel extends JPanel {
         this.gameController = gameController;
         this.drawingBoard = new DrawingBoard(this);
         this.chat = new ChatPanel(this);
+        this.playerList = new PlayerListPanel();
 
         this.setBackground(Color.CYAN);
         this.setLayout(new GridBagLayout());
@@ -41,9 +43,11 @@ public class GameRoomPanel extends JPanel {
 
         container.add(Box.createVerticalStrut(5));
 
-        JPanel smallBottomPanel = createSmallBottomPanel();
-
-        container.add(smallBottomPanel);
+        DrawingOptionsPanel drawingOptionsPanel = new DrawingOptionsPanel(
+                drawingBoard,
+                this
+        );
+        container.add(drawingOptionsPanel);
 
         return container;
     }
@@ -58,36 +62,16 @@ public class GameRoomPanel extends JPanel {
         top.setPreferredSize(new Dimension(100, 70));
         top.setBackground(Color.WHITE);
 
-        JPanel left = new JPanel();
-        left.setPreferredSize(new Dimension(200, 100));
-        left.setBackground(Color.WHITE);
+        JLabel gameStatusLabel = new JLabel("Ожидание начала игры...", SwingConstants.CENTER);
+        gameStatusLabel.setFont(new Font("Arial", Font.BOLD, 16));
+        top.add(gameStatusLabel);
 
         centerPanel.add(top, BorderLayout.NORTH);
-        centerPanel.add(left, BorderLayout.WEST);
+        centerPanel.add(this.playerList, BorderLayout.WEST);
         centerPanel.add(this.chat, BorderLayout.EAST);
         centerPanel.add(this.drawingBoard, BorderLayout.CENTER);
 
         return centerPanel;
-    }
-
-    private JPanel createSmallBottomPanel() {
-        JPanel smallPanel = new JPanel();
-        smallPanel.setBackground(Color.WHITE);
-        smallPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 10));
-
-        JPanel wrapper = new JPanel();
-        wrapper.setLayout(new BoxLayout(wrapper, BoxLayout.X_AXIS));
-        wrapper.setOpaque(false);
-
-        wrapper.add(Box.createHorizontalStrut(200));
-
-        smallPanel.setPreferredSize(new Dimension(800, 100));
-        smallPanel.setMaximumSize(new Dimension(800, 100));
-        wrapper.add(smallPanel);
-
-        wrapper.add(Box.createHorizontalStrut(300));
-
-        return wrapper;
     }
 
     public void sendMessage(Message message) {
@@ -96,8 +80,10 @@ public class GameRoomPanel extends JPanel {
 
     public void handleDrawingMessage(DrawingMessage message) {
         switch (message.getDrawingType()) {
-            case PRESS -> drawingBoard.handleMousePressed(message.getPoint());
+            case PRESS -> drawingBoard.handleMousePressed(message.getPoint(), message.getBrushSize(), message.getColor());
             case DRAG -> drawingBoard.handleMouseDragged(message.getPoint());
+            case UNDO -> drawingBoard.undo();
+            case CLEAR -> drawingBoard.clear();
         }
     }
 
@@ -105,7 +91,18 @@ public class GameRoomPanel extends JPanel {
         chat.appendMessage(message);
     }
 
+    public void addPlayer(Player player) {
+        playerList.addPlayer(player);
+        chat.appendMessage(new ChatMessage("System", player.getUsername() + " присоединился к игре"));
+    }
+
+    public void removePlayer(Player player) {
+        playerList.removePlayer(player.getId());
+        chat.appendMessage(new ChatMessage("System", player.getUsername() + " покинул игру"));
+    }
+
     public void synchronize(GameSyncMessage message) {
+        playerList.setPlayers(message.getPlayers());
         drawingBoard.synchronize(message.getLines());
     }
 }
