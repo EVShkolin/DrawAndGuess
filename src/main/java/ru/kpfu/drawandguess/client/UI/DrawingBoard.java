@@ -1,34 +1,37 @@
 package ru.kpfu.drawandguess.client.UI;
 
+import lombok.Getter;
+import lombok.Setter;
+import ru.kpfu.drawandguess.common.model.Line;
 import ru.kpfu.drawandguess.common.protocol.draw.DrawingMessage;
 import ru.kpfu.drawandguess.common.protocol.draw.DrawingType;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionAdapter;
+import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@Getter
+@Setter
 public class DrawingBoard extends JPanel {
 
     private GameRoomPanel gameRoomPanel;
 
-    private List<List<Point>> lines = new ArrayList<>();
-    private List<Point> currentLine;
+    private List<Line> lines = new ArrayList<>();
+    private Line currentLine;
     private int brushSize = 3;
     private Color color = Color.BLACK;
 
     public DrawingBoard(GameRoomPanel gameRoomPanel) {
         this.gameRoomPanel = gameRoomPanel;
-        this.setBackground(Color.CYAN);
+        this.setBackground(Color.WHITE);
         addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
                 Point p = new Point(e.getX(), e.getY());
-                handleMousePressed(p);
-                gameRoomPanel.sendMessage(new DrawingMessage(DrawingType.PRESS, p));
+                handleMousePressed(p, brushSize, color);
+                gameRoomPanel.sendMessage(new DrawingMessage(DrawingType.PRESS, p, brushSize, color));
             }
         });
 
@@ -47,9 +50,10 @@ public class DrawingBoard extends JPanel {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g;
-        g2d.setStroke(new BasicStroke(brushSize));
-        g2d.setColor(color);
-        for (List<Point> points : lines) {
+        for (Line line : lines) {
+            g2d.setStroke(new BasicStroke(line.getBrushSize()));
+            g2d.setColor(line.getColor());
+            List<Point> points = line.getPoints();
             for (int i = 0; i < points.size() - 1; i++) {
                 Point p1 = points.get(i);
                 Point p2 = points.get(i + 1);
@@ -62,19 +66,31 @@ public class DrawingBoard extends JPanel {
         }
     }
 
-    public void handleMousePressed(Point p) {
-        currentLine = new ArrayList<>();
-        currentLine.add(p);
+    public void handleMousePressed(Point p, int brushSize, Color color) {
+        currentLine = new Line(brushSize, color);
+        currentLine.addPoint(p);
         lines.add(currentLine);
         repaint();
     }
 
     public void handleMouseDragged(Point p) {
-        currentLine.add(p);
+        currentLine.addPoint(p);
         repaint();
     }
 
-    public void synchronize(List<List<Point>> lines) {
+    public void undo() {
+        if (!lines.isEmpty()) {
+            lines.removeLast();
+            repaint();
+        }
+    }
+
+    public void clear() {
+        this.lines = new ArrayList<>();
+        repaint();
+    }
+
+    public void synchronize(List<Line> lines) {
         this.lines = lines;
         repaint();
     }

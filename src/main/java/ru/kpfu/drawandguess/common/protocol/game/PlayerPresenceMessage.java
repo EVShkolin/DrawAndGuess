@@ -1,22 +1,23 @@
-package ru.kpfu.drawandguess.common.protocol.chat;
+package ru.kpfu.drawandguess.common.protocol.game;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import ru.kpfu.drawandguess.common.model.Player;
 import ru.kpfu.drawandguess.common.protocol.Message;
 import ru.kpfu.drawandguess.common.protocol.MessageType;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-public class ChatMessage implements Message {
+public class PlayerPresenceMessage implements Message {
 
-    private String username;
+    private boolean joined;
 
-    private String text;
+    private Player player;
 
     @Override
     public MessageType getType() {
-        return MessageType.CHAT;
+        return MessageType.GAME;
     }
 }

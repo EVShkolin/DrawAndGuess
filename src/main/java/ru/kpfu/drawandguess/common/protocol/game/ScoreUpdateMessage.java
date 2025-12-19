@@ -1,4 +1,4 @@
-package ru.kpfu.drawandguess.common.protocol.chat;
+package ru.kpfu.drawandguess.common.protocol.game;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,14 +9,14 @@ import ru.kpfu.drawandguess.common.protocol.MessageType;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-public class ChatMessage implements Message {
+public class ScoreUpdateMessage implements Message {
 
-    private String username;
+    private String id;
 
-    private String text;
+    private String score;
 
     @Override
     public MessageType getType() {
-        return MessageType.CHAT;
+        return MessageType.GAME;
     }
 }

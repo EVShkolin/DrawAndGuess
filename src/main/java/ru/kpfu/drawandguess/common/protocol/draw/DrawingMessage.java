@@ -15,6 +15,19 @@ public class DrawingMessage implements Message {
 
     private Point point;
 
+    private int brushSize;
+
+    private Color color;
+
+    public DrawingMessage(DrawingType drawingType) {
+        this.drawingType = drawingType;
+    }
+
+    public DrawingMessage(DrawingType drawingType, Point point) {
+        this.drawingType = drawingType;
+        this.point = point;
+    }
+
     @Override
     public MessageType getType() {
         return MessageType.DRAWING;

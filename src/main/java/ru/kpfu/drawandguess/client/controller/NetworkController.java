@@ -2,6 +2,7 @@ package ru.kpfu.drawandguess.client.controller;
 
 import lombok.Setter;
 import ru.kpfu.drawandguess.common.protocol.Message;
+import ru.kpfu.drawandguess.common.protocol.MessageType;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -15,7 +16,12 @@ public class NetworkController {
     private Socket socket;
     private ObjectOutputStream out;
     private ObjectInputStream in;
+    private AppController appController;
     private GameController gameController;
+
+    public NetworkController(AppController appController) {
+        this.appController = appController;
+    }
 
     public void connect(InetAddress host, int port) {
         try {
@@ -32,7 +38,11 @@ public class NetworkController {
         while (!socket.isClosed()) {
             try {
                 Message message = (Message) in.readObject();
-                gameController.handleMessage(message);
+                if (message.getType().equals(MessageType.SYSTEM)) {
+                    appController.handleSystemMessage(message);
+                } else {
+                    gameController.handleMessage(message);
+                }
             } catch (IOException | ClassNotFoundException e) {
                 throw new RuntimeException(e);
             }

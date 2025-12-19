@@ -10,10 +10,13 @@ public class RoomManager {
 
     private Map<String, GameRoom> rooms = new HashMap<>();
 
-    public GameRoom createRoom(String title, Connection creator) {
+    public RoomManager() {
+        createRoom("Default");
+    }
+
+    public GameRoom createRoom(String title) {
         String id = UUID.randomUUID().toString();
-        GameRoom gameRoom = new GameRoom(id, title, creator);
-        creator.setGameRoom(gameRoom);
+        GameRoom gameRoom = new GameRoom(id, title);
         this.rooms.put(id, gameRoom);
         return gameRoom;
     }
@@ -24,6 +27,14 @@ public class RoomManager {
 
     public void addPlayerToRoom(Connection player, String roomId) {
         GameRoom gameRoom = rooms.get(roomId);
+        gameRoom.addPlayer(player);
+        player.setGameRoom(gameRoom);
+        GameSyncMessage gameSyncMessage = new GameSyncMessage(gameRoom);
+        player.sendMessage(gameSyncMessage);
+    }
+
+    public void addPlayerToRoom(Connection player) {
+        GameRoom gameRoom = rooms.values().iterator().next();
         gameRoom.addPlayer(player);
         player.setGameRoom(gameRoom);
         GameSyncMessage gameSyncMessage = new GameSyncMessage(gameRoom);
