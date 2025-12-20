@@ -8,11 +8,8 @@ import ru.kpfu.drawandguess.common.model.Line;
 import ru.kpfu.drawandguess.common.model.Player;
 import ru.kpfu.drawandguess.common.protocol.Message;
 import ru.kpfu.drawandguess.common.protocol.MessageType;
-import ru.kpfu.drawandguess.common.protocol.chat.ChatMessage;
-import ru.kpfu.drawandguess.server.Connection;
 import ru.kpfu.drawandguess.server.GameRoom;
 
-import java.awt.*;
 import java.util.List;
 
 @AllArgsConstructor
@@ -38,7 +35,7 @@ public class GameSyncMessage implements Message {
                 .toList();
         this.lines = gameRoom.getLines();
         this.gameState = gameRoom.getGameState();
-        this.roundTimeLeft = gameRoom.getRoundTimeLeft();
+        this.roundTimeLeft = gameRoom.getTimeLeft();
         this.currentDrawer = gameRoom.getCurrentDrawer() == null ? null : gameRoom.getCurrentDrawer().getUsername();
         this.hiddenWord = hideWord(gameRoom.getCurrentWord());
         this.round = gameRoom.getRound();
@@ -51,7 +48,7 @@ public class GameSyncMessage implements Message {
     }
 
     public String hideWord(String currentWord) {
-        // todo
-        return currentWord;
+        if (currentWord == null) return null;
+        return currentWord.replaceAll("[а-яА-Я]", "_");
     }
 }

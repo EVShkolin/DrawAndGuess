@@ -29,6 +29,7 @@ public class DrawingOptionsPanel extends JPanel {
         this.add(Box.createHorizontalStrut(300));
 
         setupKeyBindings();
+        this.setVisible(false);
     }
 
     private JPanel getControlsPanel() {

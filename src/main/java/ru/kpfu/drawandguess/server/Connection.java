@@ -21,6 +21,7 @@ public class Connection implements Runnable {
     private String id;
     private String username;
     private int score;
+    private boolean guessed;
     private Socket socket;
     private RoomManager roomManager;
     private GameRoom gameRoom;
@@ -70,12 +71,11 @@ public class Connection implements Runnable {
     private void handleMessage(Message message, Connection author) {
         switch (message.getType()) {
             case DRAWING -> gameRoom.handleDrawingMessage((DrawingMessage) message, author);
-            case CHAT -> gameRoom.handleChatMessage((ChatMessage) message);
-            case GAME -> gameRoom.handleGameMessage(message);
+            case CHAT -> gameRoom.handleChatMessage((ChatMessage) message, author);
         }
     }
 
-    public void sendMessage(Object message) {
+    public synchronized void sendMessage(Object message) {
         try {
             out.writeObject(message);
         } catch (IOException e) {

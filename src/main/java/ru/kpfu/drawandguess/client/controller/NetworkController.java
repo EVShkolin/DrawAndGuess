@@ -49,7 +49,7 @@ public class NetworkController {
         }
     }
 
-    public void sendMessage(Message message) {
+    public synchronized void sendMessage(Message message) {
         try {
             System.out.println("Message sent " + message.getType());
             out.writeObject(message);
